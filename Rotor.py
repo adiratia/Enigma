@@ -1,28 +1,27 @@
 from Translator import Translator
 
-alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 class Rotor(Translator):
 
 
     def __init__(self,forward_permutation, ring_setting, turnover):
+        self.alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         self.forward_permutation = [value for value in forward_permutation]
-        self.ring_setting = ring_setting
-        self.turnover = turnover
+        self.ring_setting = self.toIndex(ring_setting)
+        self.turnover = self.toIndex(turnover)
+    def toIndex(self,letter):
+        return (self.alphabet.find(letter)+1)
+    def toLetter(self,index):
+        return self.alphabet[index-1]
+
     def set_position(self):
-        next_position = (( alphabet.find(self.ring_setting))+1) % 25
-        self.ring_setting = alphabet[next_position]
+        next_position = (self.ring_setting+1) % 26
+        self.ring_setting = next_position
 
     def turnoverCheck(self):
-        if self.ring_setting == self.turnover:
-            return True
-        return False
+        return self.ring_setting == self.turnover
 
     def translate(self,value):
-        print((alphabet.find(self.ring_setting)))
-        print((alphabet.find(value)))
-        position = (alphabet.find(self.ring_setting) + alphabet.find(value)-1)% 25
-        return self.forward_permutation[position]
+        return self.forward_permutation[self.toIndex(value)]
 
     def revTranslate(self,value):
-        position = ( self.forward_permutation.index(value) + self.forward_permutation.index(self.ring_setting)) % 25
-        return alphabet[position]
+        return self.alphabet[self.forward_permutation.index(value)]
